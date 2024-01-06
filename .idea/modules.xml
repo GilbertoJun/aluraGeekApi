@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/aluraGeekApi.iml" filepath="$PROJECT_DIR$/aluraGeekApi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/apialurageek.iml" filepath="$PROJECT_DIR$/apialurageek.iml" />
     </modules>
   </component>
 </project>
