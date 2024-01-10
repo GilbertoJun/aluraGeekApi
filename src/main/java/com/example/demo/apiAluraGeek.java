@@ -5,15 +5,14 @@ import com.example.demo.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 
 @SpringBootApplication
 @RestController
-@RequestMapping("/")
+@RequestMapping("/produto")
 public class apiAluraGeek {
 
 	@Autowired
@@ -23,31 +22,38 @@ public class apiAluraGeek {
 		this.productRepository = productRepository;
 	}
 
-	@GetMapping("/teste")
-	public void teste(){
+	@ResponseBody
+	@GetMapping("/{id}")
+	public Optional<Product> teste(@PathVariable Long id){
+		Optional<Product> product = productRepository.findById(id);
 
-		System.out.println("Chegamos na primeira rota");
+		return product;
 	}
 	@PostMapping("/teste")
 	public void testePost(){
 		System.out.println("Chegamos na primeira rota só POST");
 	}
 
-	@PostMapping("/criar-produto")
-	public void criarProduto(){
-
-		Product product = new Product();
-		product.setName("Produto XYZ");
-		product.setCategory("Star Wars");
-		product.setPrice(60.0);
-		product.setImageUrl("");
-
+	@PostMapping()
+	public void criarProduto(@RequestBody Product product){
 		productRepository.save(product);
 
 	}
+	@PutMapping()
+	public void atualizarProduto(@RequestBody Product product){
+		productRepository.save(product);
+
+	}
+	@DeleteMapping("/{teste}")
+	public void deletarProduto(@PathVariable String teste){
+		// implementar
+	}
+
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(apiAluraGeek.class, args);
 	}
 
 }
+
