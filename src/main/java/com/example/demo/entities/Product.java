@@ -1,6 +1,7 @@
 package com.example.demo.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,9 +10,16 @@ public class Product {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private String category;
+    private Integer idCategory;
+
     private Double price;
+
     private String imageUrl;
+
+    @JsonProperty("idCategory")
+    private void unpackNested(Integer idCategory) {
+        this.idCategory = idCategory;
+    }
 
     public Long getId() {
         return id;
@@ -25,13 +33,12 @@ public class Product {
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
+    public Integer getIdCategory() {
+        return idCategory;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public void setIdCategory(Category category) {this.idCategory = category.getId();}
+    public void setIdCategory(Integer idCategory) {this.idCategory = idCategory;}
 
     public Double getPrice() {
         return price;
