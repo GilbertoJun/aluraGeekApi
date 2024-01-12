@@ -1,8 +1,13 @@
 package com.example.demo.entities;
 
 
+import com.example.demo.repositories.CategoryRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.Optional;
 
 @Entity
 @Table(name="product")
@@ -10,19 +15,24 @@ public class Product {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    private Integer idCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "id_category")
+    private Category category;
 
     private Double price;
 
     private String imageUrl;
 
-    @JsonProperty("idCategory")
-    private void unpackNested(Integer idCategory) {
-        this.idCategory = idCategory;
-    }
+    @Transient
+    private Long idCategory;
+
 
     public Long getId() {
         return id;
+    }
+    public Long getIdCategory() {
+        return idCategory;
     }
 
     public String getName() {
@@ -33,12 +43,12 @@ public class Product {
         this.name = name;
     }
 
-    public Integer getIdCategory() {
-        return idCategory;
-    }
+//    public Integer getIdCategory() {
+//        return idCategory;
+//    }
 
-    public void setIdCategory(Category category) {this.idCategory = category.getId();}
-    public void setIdCategory(Integer idCategory) {this.idCategory = idCategory;}
+//    public void setIdCategory(Category category) {this.idCategory = category.getId();}
+//    public void setIdCategory(Integer idCategory) {this.idCategory = idCategory;}
 
     public Double getPrice() {
         return price;
@@ -54,5 +64,18 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @JsonProperty("idCategory")
+    private void handleIdCategory(Long idCategory){
+        this.idCategory = idCategory;
     }
 }
