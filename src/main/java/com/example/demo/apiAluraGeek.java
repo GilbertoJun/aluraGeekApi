@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -41,6 +43,16 @@ public class apiAluraGeek {
 		Optional<Product> product = productRepository.findById(id);
 
 		return product;
+	}
+
+	@ResponseBody
+	@GetMapping("/produtos")
+	public ResponseEntity<List> buscarProdutos(){
+
+		List<Product> products = productRepository.findAll();
+
+		return new ResponseEntity<List>(products, HttpStatus.OK);
+
 	}
 
 	@ResponseBody
@@ -72,11 +84,10 @@ public class apiAluraGeek {
 	@PutMapping("/produto")
 	public void atualizarProduto(@RequestBody Product product){
 		productRepository.save(product);
-
 	}
-	@DeleteMapping("/{teste}")
-	public void deletarProduto(@PathVariable String teste){
-		// implementar
+	@DeleteMapping("/produto/{id}")
+	public void deletarProduto(@PathVariable Long id){
+		productRepository.deleteById(id);
 	}
 
 	@PostMapping("/categoria")
@@ -84,6 +95,29 @@ public class apiAluraGeek {
 		categoryRepository.save(category);
 
 	}
+
+
+	@GetMapping("/categoria/{id}")
+	public Optional<Category> buscarCategoria(@PathVariable Long id){
+		Optional<Category> category = categoryRepository.findById(id);
+
+		return category;
+	}
+
+	@ResponseBody
+	@GetMapping("/categorias")
+	public ResponseEntity<List> buscarCategorias(){
+
+		List<Category> categories = categoryRepository.findAll();
+
+		return new ResponseEntity<List>(categories, HttpStatus.OK);
+	}
+
+//	@DeleteMapping("/categoria/{id}")
+//	public void deletarCategoria(@PathVariable Long id){
+//		categoryRepository.deleteById(id);
+	// implementar
+//	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(apiAluraGeek.class, args);
