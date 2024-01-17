@@ -8,6 +8,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -113,11 +116,49 @@ public class apiAluraGeek {
 		return new ResponseEntity<List>(categories, HttpStatus.OK);
 	}
 
-//	@DeleteMapping("/categoria/{id}")
-//	public void deletarCategoria(@PathVariable Long id){
-//		categoryRepository.deleteById(id);
-	// implementar
-//	}
+
+	@ResponseBody
+	@DeleteMapping("/categoria/{id}")
+	public ResponseEntity<HashMap> deletarCategoria(@PathVariable Long id){
+		HashMap<String, Object> response = new HashMap<String, Object>();
+
+		Optional<Category> optionalCategory = categoryRepository.findById(id);
+		if(optionalCategory.isEmpty()){
+			response.put("mensagem", "Categoria não encontrada.");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+		}
+
+		if(productRepository.existsByCategory(optionalCategory.get())){
+			response.put("mensagem", "Não é possível remover categorias com produtos vinculados.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+		}else{
+			categoryRepository.deleteById(id);
+			response.put("mensagem", "Removido com sucesso");
+		}
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@ResponseBody
+	@GetMapping("/categoria/{idCategory}/produtos/{pagina}")
+	public ResponseEntity<HashMap> buscarProdutosDeCategoria(@PathVariable Long idCategory, @PathVariable Integer pagina){
+		HashMap<String, Object> response = new HashMap<String, Object>();
+
+		Optional<Category> optionalCategory = categoryRepository.findById(idCategory);
+		if(optionalCategory.isEmpty()){
+			response.put("mensagem", "Categoria não encontrada.");
+			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+		}
+
+		Pageable pageable = PageRequest.of(pagina - 1, 2);
+		Page<Product> paginaDeProdutos = productRepository.findByCategory(optionalCategory.get(), pageable);
+		List listaDeProdutos = paginaDeProdutos.getContent();
+
+		response.put("produtos", listaDeProdutos);
+
+
+		return new ResponseEntity<HashMap>(response, HttpStatus.OK);
+	}
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(apiAluraGeek.class, args);
