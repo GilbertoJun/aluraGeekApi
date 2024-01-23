@@ -5,6 +5,7 @@ import com.example.demo.entities.Product;
 import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.repositories.ProductRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -109,11 +110,17 @@ public class apiAluraGeek {
 
 	@ResponseBody
 	@GetMapping("/categorias")
-	public ResponseEntity<List> buscarCategorias(){
+	public ResponseEntity<List> buscarCategorias(@RequestParam(required = false) Boolean somenteComProduto){
 
-		List<Category> categories = categoryRepository.findAll();
+        List<Category> categories;
 
-		return new ResponseEntity<List>(categories, HttpStatus.OK);
+        if(somenteComProduto != null && somenteComProduto){
+            categories = categoryRepository.findAllByProdutosNotNull();
+        } else {
+            categories = categoryRepository.findAll();
+        }
+
+        return new ResponseEntity<List>(categories, HttpStatus.OK);
 	}
 
 
@@ -149,7 +156,7 @@ public class apiAluraGeek {
 			return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 		}
 
-		Pageable pageable = PageRequest.of(pagina - 1, 2);
+		Pageable pageable = PageRequest.of(pagina - 1, 10);
 		Page<Product> paginaDeProdutos = productRepository.findByCategory(optionalCategory.get(), pageable);
 		List listaDeProdutos = paginaDeProdutos.getContent();
 
