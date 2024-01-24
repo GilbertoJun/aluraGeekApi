@@ -13,9 +13,11 @@ public interface CategoryRepository extends Repository<Category, Long> {
     Optional<Category> findById(Long id);
 
     List<Category> findAll();
+    List<Category> findAllByCategoryNameContaining(String stringBusca);
 
     void deleteById(Long id);
 
     List<Category> findAllByProdutosNotNull();
+    List<Category> findAllByProdutosNotNullAndCategoryNameContaining(String stringBusca);
 
 }

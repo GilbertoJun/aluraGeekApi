@@ -21,5 +21,8 @@ public interface ProductRepository extends Repository<Product, Long> {
         Boolean existsByCategory(Category category);
         List<Product> findAllByCategory(Category category);
         Page<Product> findByCategory(Category category, Pageable pageable);
+        Page<Product> findByCategoryAndNameContaining(Category category, String buscaString, Pageable pageable);
+
+        List<Product> findByCategoryAndNameContaining(Category category, String buscaString);
     }
 

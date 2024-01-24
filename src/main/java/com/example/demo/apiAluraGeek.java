@@ -110,14 +110,18 @@ public class apiAluraGeek {
 
 	@ResponseBody
 	@GetMapping("/categorias")
-	public ResponseEntity<List> buscarCategorias(@RequestParam(required = false) Boolean somenteComProduto){
+	public ResponseEntity<List> buscarCategorias(@RequestParam(required = false) Boolean somenteComProduto, @RequestParam(required = false) String stringBusca){
 
         List<Category> categories;
 
         if(somenteComProduto != null && somenteComProduto){
-            categories = categoryRepository.findAllByProdutosNotNull();
+
+            if(stringBusca == null) categories = categoryRepository.findAllByProdutosNotNull();// ONDE TEM PRODUTO
+			else categories = categoryRepository.findAllByProdutosNotNullAndCategoryNameContaining(stringBusca);// ONDE TEM PRODUTO E DA MATCH COM STRING
         } else {
-            categories = categoryRepository.findAll();
+
+            if(stringBusca == null) categories = categoryRepository.findAll();// BUSCA TODAS
+			else categories = categoryRepository.findAllByCategoryNameContaining(stringBusca);// BUSCA TODAS COM MATCH NA STRING
         }
 
         return new ResponseEntity<List>(categories, HttpStatus.OK);
@@ -147,7 +151,7 @@ public class apiAluraGeek {
 
 	@ResponseBody
 	@GetMapping("/categoria/{idCategory}/produtos/{pagina}")
-	public ResponseEntity<HashMap> buscarProdutosDeCategoria(@PathVariable Long idCategory, @PathVariable Integer pagina){
+	public ResponseEntity<HashMap> buscarProdutosDeCategoria(@PathVariable Long idCategory, @PathVariable Integer pagina, @RequestParam(required = false) String stringBusca){
 		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		Optional<Category> optionalCategory = categoryRepository.findById(idCategory);
@@ -157,7 +161,11 @@ public class apiAluraGeek {
 		}
 
 		Pageable pageable = PageRequest.of(pagina - 1, 10);
-		Page<Product> paginaDeProdutos = productRepository.findByCategory(optionalCategory.get(), pageable);
+		Page<Product> paginaDeProdutos;
+
+		if(stringBusca == null) 	paginaDeProdutos = productRepository.findByCategory(optionalCategory.get(), pageable);
+		else 						paginaDeProdutos = productRepository.findByCategoryAndNameContaining(optionalCategory.get(), stringBusca, pageable);
+
 		List listaDeProdutos = paginaDeProdutos.getContent();
 
 		response.put("produtos", listaDeProdutos);
