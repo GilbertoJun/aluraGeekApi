@@ -25,6 +25,7 @@ import java.util.Optional;
 
 @SpringBootApplication
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/")
 public class apiAluraGeek {
 
