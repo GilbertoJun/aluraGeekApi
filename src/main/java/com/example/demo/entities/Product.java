@@ -23,6 +23,7 @@ public class Product {
 
     private Double price;
 
+    @Column(columnDefinition = "TEXT")
     private String imageUrl;
 
     @Transient

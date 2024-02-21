@@ -152,7 +152,7 @@ public class apiAluraGeek {
 
 	@ResponseBody
 	@GetMapping("/categoria/{idCategory}/produtos/{pagina}")
-	public ResponseEntity<HashMap> buscarProdutosDeCategoria(@PathVariable Long idCategory, @PathVariable Integer pagina, @RequestParam(required = false) String stringBusca){
+	public ResponseEntity<HashMap> buscarProdutosDeCategoria(@PathVariable Long idCategory, @PathVariable(required = false) Integer pagina, @RequestParam(required = false) String stringBusca){
 		HashMap<String, Object> response = new HashMap<String, Object>();
 
 		Optional<Category> optionalCategory = categoryRepository.findById(idCategory);
