@@ -29,10 +29,12 @@ public class Product {
     @Transient
     private Long idCategory;
 
+    private String description;
 
     public Long getId() {
         return id;
     }
+
     public Long getIdCategory() {
         return idCategory;
     }
@@ -76,8 +78,13 @@ public class Product {
         this.category = category;
     }
 
+    public String getDescription(){return this.description; }   
+
+    public void setDescription(String description){this.description = description; }
+
     @JsonProperty("idCategory")
     private void handleIdCategory(Long idCategory){
+
         this.idCategory = idCategory;
     }
 }

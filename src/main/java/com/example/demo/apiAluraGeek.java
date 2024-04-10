@@ -67,7 +67,7 @@ public class apiAluraGeek {
 
 
 		if(product.getIdCategory() != null){
-			Optional<Category> categoria = categoryRepository.findById(product.getIdCategory());
+			Optional<Category> categoria = categoryRepository.findById((long)product.getIdCategory());
 			if(categoria.isEmpty()){
 				response.put("mensagem", "Categoria informada é invalida");
 				return new ResponseEntity<HashMap>(response, HttpStatus.NOT_FOUND);
@@ -88,6 +88,9 @@ public class apiAluraGeek {
 	}
 	@PutMapping("/produto")
 	public void atualizarProduto(@RequestBody Product product){
+		Optional<Category> optionalCategory = categoryRepository.findById(product.getIdCategory());
+
+		product.setCategory(optionalCategory.get());
 		productRepository.save(product);
 	}
 	@DeleteMapping("/produto/{id}")
